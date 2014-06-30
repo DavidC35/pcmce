@@ -6,7 +6,9 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class AfficherListNoms extends VerticalPanel {
+	
 	FlexTable table = new FlexTable();
+	
 	static final int NAME_COLUMN = 0;
 	
 	public AfficherListNoms () {

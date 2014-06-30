@@ -1,8 +1,18 @@
 package fr.istic.dugl.pcmce.client;
 
+import java.util.List;
+
 import fr.istic.dugl.pcmce.shared.FieldVerifier;
+import fr.istic.dugl.pcmce.view.AccueilPanel;
+import fr.istic.dugl.pcmce.client.Pages;
+import fr.istic.dugl.pcmce.client.Project_PCMComparatorEditor;
+import fr.istic.dugl.pcmce.client.SuccesService;
+import fr.istic.dugl.pcmce.client.SuccesServiceAsync;
+import fr.istic.dugl.pcmce.view.AfficherListNoms;
+
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
@@ -10,10 +20,13 @@ import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.DeckPanel;
 import com.google.gwt.user.client.ui.DialogBox;
+import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.TabLayoutPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -35,28 +48,129 @@ public class Project_PCMComparatorEditor implements EntryPoint {
 	private final GreetingServiceAsync greetingService = GWT
 			.create(GreetingService.class);
 
+	private final SuccesServiceAsync succesService = GWT.create(SuccesService.class);
+	
+	static private DeckPanel deckPanel = new DeckPanel();
+	
+	
 	/**
 	 * This is the entry point method.
 	 */
 	public void onModuleLoad() {
-		final Button sendButton = new Button("Send");
-		final TextBox nameField = new TextBox();
-		nameField.setText("GWT User");
-		final Label errorLabel = new Label();
+		
+		RootPanel.get().add(deckPanel);
+		deckPanel.add(Pages.LIST_NOMS.getPanel());
+		deckPanel.add(Pages.LIST_NOMS.getAccueilPanel());
+		
+		deckPanel.showWidget(Pages.LIST_NOMS.ordinal());
+		envoieNomServer();
+	}
+	
+	public static void show(Pages page) {
+		deckPanel.showWidget(page.ordinal());
+	}
 
+	private  void envoieNomServer() {
+
+		 String nom = "toto";
+         succesService.envoieNomServer(nom, new AsyncCallback<List<String>>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onSuccess(List<String> result) {
+				AccueilPanel page = (AccueilPanel) Pages.LIST_NOMS.getAccueilPanel();
+				// page.init(result);
+				Project_PCMComparatorEditor.show(Pages.LIST_NOMS);
+			}
+		}); 
+		
+		
+		/*
+		final Label lblSelectFile = new Label("Enter File's url: ");
+		final TextBox txtLoadFile = new TextBox();
+		final Label lblSelectFileBrowse = new Label("or browse it: ");
+		final FileUpload browseBtn = new FileUpload();
+		final Button loadBtn = new Button("Load");
+		txtLoadFile.setText("Enter your URL here");
+		final Label errorLbl = new Label();
+		final TabLayoutPanel panel = new TabLayoutPanel(35, Unit.PX);
+		VerticalPanel loadFilePanel = new VerticalPanel();
+		VerticalPanel verticaltabPanel = new VerticalPanel();
+		/*
+		loadFilePanel.addStyleName("verticalLoadPanelContainer");
+		verticaltabPanel.addStyleName("verticalTabPanelContainer");
+		
 		// We can add style names to widgets
-		sendButton.addStyleName("sendButton");
+		loadBtn.addStyleName("loadBtn");
 
-		// Add the nameField and sendButton to the RootPanel
-		// Use RootPanel.get() to get the entire body element
-		RootPanel.get("nameFieldContainer").add(nameField);
-		RootPanel.get("sendButtonContainer").add(sendButton);
-		RootPanel.get("errorLabelContainer").add(errorLabel);
+		browseBtn.setName("fileUpload");
 
+		// Add the txtLoadFile and loadBtn to the RootLayoutPanel
+		// Use RootLayoutPanel.get() to get the entire body element
+		/*
+		RootLayoutPanel.get("fileFieldContainer").add(txtLoadFile);
+		RootLayoutPanel.get("loadBtnContainer").add(loadBtn);
+		RootLayoutPanel.get("browseBtnContainer").add(browseBtn);
+		RootLayoutPanel.get("errorLblContainer").add(errorLbl);
+		 */
+		/*
+		Widget loadFilePanelWidget;
+		
+		loadFilePanel.add(lblSelectFile);
+		loadFilePanel.add(txtLoadFile);
+		loadFilePanel.add(lblSelectFileBrowse);
+		loadFilePanel.add(browseBtn);
+		loadFilePanel.add(loadBtn);
+		*/
+		/*
 		// Focus the cursor on the name field when the app loads
-		nameField.setFocus(true);
-		nameField.selectAll();
+		txtLoadFile.setFocus(true);
+		txtLoadFile.selectAll();
+		*/
+		/*
+		String text1 = "Lorem ipsum dolor sit amet...";
+		String text2 = "Sed egestas, arcu nec accumsan...";
+		String text3 = "Proin tristique, elit at blandit...";
+		
+		FlowPanel flowpanel;
 
+		flowpanel = new FlowPanel();
+		flowpanel.add(new Label(text1));
+		panel.add(flowpanel, "One");
+
+		flowpanel = new FlowPanel();
+		flowpanel.add(new Label(text2));
+		panel.add(flowpanel, "Two");
+
+		flowpanel = new FlowPanel();
+		flowpanel.add(new Label(text3));
+		panel.add(flowpanel, "Three");
+
+		panel.selectTab(0);
+
+		panel.setSize("1000px", "600px");
+		panel.addStyleName("table-center");
+		panel.setVisible(false);
+//		RootLayoutPanel.get("verticalTabPanelContainer").add(panel); 
+		
+		
+		
+		
+		LayoutPanel appPanel = new LayoutPanel();
+		appPanel.add(loadFilePanel);
+		/*
+		appPanel.setWidgetLeftWidth(loadFilePanelWidget, 0, Unit.PCT, 100, Unit.PCT);  // top panel
+		appPanel.setWidgetTopBottom(loadFilePanelWidget, 0, Unit.PCT, 50, Unit.PCT);
+		*/
+		/*
+		RootLayoutPanel.get().add(appPanel);
+		
+		
 		// Create the popup dialog box
 		final DialogBox dialogBox = new DialogBox();
 		dialogBox.setText("Remote Procedure Call");
@@ -75,51 +189,57 @@ public class Project_PCMComparatorEditor implements EntryPoint {
 		dialogVPanel.setHorizontalAlignment(VerticalPanel.ALIGN_RIGHT);
 		dialogVPanel.add(closeButton);
 		dialogBox.setWidget(dialogVPanel);
-
+		*/
 		// Add a handler to close the DialogBox
+		/*
 		closeButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				dialogBox.hide();
-				sendButton.setEnabled(true);
-				sendButton.setFocus(true);
+				loadBtn.setEnabled(true);
+				loadBtn.setFocus(true);
 			}
 		});
 
-		// Create a handler for the sendButton and nameField
+		// Create a handler for the loadBtn and nameField
 		class MyHandler implements ClickHandler, KeyUpHandler {
 			/**
-			 * Fired when the user clicks on the sendButton.
+			 * Fired when the user clicks on the loadBtn.
 			 */
+	/*
 			public void onClick(ClickEvent event) {
 				sendNameToServer();
+				panel.setVisible(true);
 			}
 
 			/**
 			 * Fired when the user types in the nameField.
 			 */
+		/*
 			public void onKeyUp(KeyUpEvent event) {
 				if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
 					sendNameToServer();
+					panel.setVisible(true);
 				}
 			}
 
 			/**
 			 * Send the name from the nameField to the server and wait for a response.
 			 */
+		/*
 			private void sendNameToServer() {
 				// First, we validate the input.
-				errorLabel.setText("");
-				String textToServer = nameField.getText();
-				if (!FieldVerifier.isValidName(textToServer)) {
-					errorLabel.setText("Please enter at least four characters");
+				errorLbl.setText("");
+				String fileUrl = txtLoadFile.getText();
+				if (!FieldVerifier.isValidName(fileUrl)) {
+					errorLbl.setText("Please enter an url");
 					return;
 				}
 
 				// Then, we send the input to the server.
-				sendButton.setEnabled(false);
-				textToServerLabel.setText(textToServer);
+				loadBtn.setEnabled(false);
+				textToServerLabel.setText(fileUrl);
 				serverResponseLabel.setText("");
-				greetingService.greetServer(textToServer,
+				greetingService.greetServer(fileUrl,
 						new AsyncCallback<String>() {
 							public void onFailure(Throwable caught) {
 								// Show the RPC error message to the user
@@ -146,7 +266,9 @@ public class Project_PCMComparatorEditor implements EntryPoint {
 
 		// Add a handler to send the name to the server
 		MyHandler handler = new MyHandler();
-		sendButton.addClickHandler(handler);
-		nameField.addKeyUpHandler(handler);
+		loadBtn.addClickHandler(handler);
+		txtLoadFile.addKeyUpHandler(handler);
+		
+		*/
 	}
 }

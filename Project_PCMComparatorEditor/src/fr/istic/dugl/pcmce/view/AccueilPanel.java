@@ -9,6 +9,7 @@ import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FileUpload;
+import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
 import com.google.gwt.user.client.ui.TextBox;
@@ -17,10 +18,17 @@ import com.google.gwt.user.client.ui.Widget;
 
 import fr.istic.dugl.pcmce.shared.FieldVerifier;
 
-public class Accueil extends Widget{
+public class AccueilPanel extends VerticalPanel{
 
-	public Accueil(){
+	FlexTable table = new FlexTable();
 	
+	static final int NAME_COLUMN = 1;
+	
+	public AccueilPanel() {
+		this.add(table);
+	}
+	
+	public void AccueilPanelInit(){
 	
 	final Label lblSelectFile = new Label("Enter File's url: ");
 	final TextBox txtLoadFile = new TextBox();
